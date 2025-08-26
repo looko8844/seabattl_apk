@@ -32,7 +32,7 @@ requirements = python3,kivy,pygame,numpy,pillow,android
 #icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (landscape, sensorLandscape, portrait or all)
-orientation = all
+orientation = sensor
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
