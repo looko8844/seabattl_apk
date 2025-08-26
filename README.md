@@ -27,7 +27,7 @@
 
 ```bash
 # Клонуйте репозиторій
-git clone https://github.com/looko8844/seabattl.git
+git clone https://github.com/looko8844/seabattl_apk.git
 cd seabattle
 
 # Встановіть buildozer
