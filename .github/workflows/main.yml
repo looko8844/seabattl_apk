@@ -23,7 +23,7 @@ jobs:
           autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 \
           cmake libffi-dev libssl-dev curl
 
-    # 3. Завантаження та установка Android SDK command-line tools
+    # 3. Встановлення Android SDK command-line tools
     - name: Install Android SDK
       run: |
         mkdir -p $HOME/Android/cmdline-tools
@@ -34,35 +34,38 @@ jobs:
         yes | sdkmanager --licenses
         sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
 
-    # 4. Налаштування середовища Java та Android
-    - name: Setup environment variables
+    # 4. Експорт змінної для Buildozer
+    - name: Set Buildozer SDK path
+      run: |
+        echo "ANDROIDSDK=$HOME/Android" >> $GITHUB_ENV
+
+    # 5. Налаштування Java середовища
+    - name: Setup Java environment
       run: |
         echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
         echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
-        echo "ANDROID_HOME=$HOME/Android" >> $GITHUB_ENV
-        echo "$HOME/Android/platform-tools:$HOME/Android/cmdline-tools/cmdline-tools/bin" >> $GITHUB_PATH
 
-    # 5. Встановлення Python залежностей
+    # 6. Встановлення Python залежностей
     - name: Install Python dependencies
       run: |
         pip3 install --upgrade pip
         pip3 install cython==0.29.36
         pip3 install buildozer
 
-    # 6. Build APK
+    # 7. Build APK
     - name: Build APK with Buildozer
-      working-directory: ./   # переконайтесь, що buildozer.spec в корені репо
+      working-directory: ./  # переконайтесь, що buildozer.spec в корені репо
       run: |
         buildozer -v android debug
 
-    # 7. Завантаження APK як артефакт
+    # 8. Завантаження APK як артефакт
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: seabattle-debug-apk
         path: bin/*.apk
 
-    # 8. Створення GitHub Release
+    # 9. Створення GitHub Release
     - name: Create Release
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v1
