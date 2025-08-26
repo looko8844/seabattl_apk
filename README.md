@@ -18,7 +18,7 @@
 
 ### Автоматична збірка через GitHub
 
-1. Перейдіть до розділу [Releases](../../releases)
+1. Перейдіть до розділу [Releases](https://github.com/looko8844/seabattl_apk)/releases)
 2. Завантажте останній APK файл
 3. Увімкніть "Невідомі джерела" в налаштуваннях Android
 4. Встановіть APK файл
@@ -27,7 +27,7 @@
 
 ```bash
 # Клонуйте репозиторій
-git clone https://github.com/yourusername/seabattle.git
+git clone https://github.com/looko8844/seabattle.git
 cd seabattle
 
 # Встановіть buildozer
