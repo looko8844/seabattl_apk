@@ -44,11 +44,34 @@ jobs:
 
     # Крок 6: Build APK
     - name: Build APK with Buildozer
+      working-directory: ./   # переконайтесь, що buildozer.spec в корені репо
       run: |
-        buildozer
+        buildozer -v android debug
 
-        files: bin/*.apk
-        draft: false
-        prerelease: false
+    # Крок 7: Завантаження артефакту
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: seabattle-debug-apk
+        path: bin/*.apk
+
+    # Крок 8: Створення GitHub Release
+    - name: Create Release
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.run_number }}
+        name: Морський Бій v${{ github.run_number }}
+        body: |
+          Автоматично згенерована збірка гри "Морський Бій"
+          
+          **Зміни:**
+          - Оновлена версія гри
+          - Покращення стабільності
+          
+          **Встановлення:**
+          1. Завантажте APK файл
+          2. Увімкніть "Невідомі джерела" в налаштуваннях Android
+          3. Встановіть APK файл
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
