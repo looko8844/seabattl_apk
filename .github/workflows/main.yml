@@ -41,6 +41,9 @@ jobs:
           cmake \
           libffi-dev \
           libssl-dev
+    - name: Install Android Build Tools
+      run: |
+        yes | sdkmanager "platform-tools" "build-tools;33.0.0" "platforms;android-33"
 
     - name: Setup Java environment
       run: |
