@@ -10,27 +10,59 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: kivy/buildozer:2025.7.0  # стабільний тег, щоб уникнути помилок pull
 
     steps:
-    # Крок 1: Клонування репозиторію
+    # 1. Клонування репозиторію
     - uses: actions/checkout@v4
 
-    # Крок 2: Build APK
+    # 2. Встановлення базових залежностей та Java
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk unzip wget python3-pip git build-essential \
+          autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 \
+          cmake libffi-dev libssl-dev curl
+
+    # 3. Завантаження та установка Android SDK command-line tools
+    - name: Install Android SDK
+      run: |
+        mkdir -p $HOME/Android/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+        unzip cmdline-tools.zip -d $HOME/Android/cmdline-tools
+        export ANDROID_SDK_ROOT=$HOME/Android
+        export PATH=$ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools/bin:$PATH
+        yes | sdkmanager --licenses
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+
+    # 4. Налаштування середовища Java та Android
+    - name: Setup environment variables
+      run: |
+        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+        echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
+        echo "ANDROID_HOME=$HOME/Android" >> $GITHUB_ENV
+        echo "$HOME/Android/platform-tools:$HOME/Android/cmdline-tools/cmdline-tools/bin" >> $GITHUB_PATH
+
+    # 5. Встановлення Python залежностей
+    - name: Install Python dependencies
+      run: |
+        pip3 install --upgrade pip
+        pip3 install cython==0.29.36
+        pip3 install buildozer
+
+    # 6. Build APK
     - name: Build APK with Buildozer
-      working-directory: ./  # переконайтесь, що buildozer.spec в корені репо
+      working-directory: ./   # переконайтесь, що buildozer.spec в корені репо
       run: |
         buildozer -v android debug
 
-    # Крок 3: Завантаження артефакту
+    # 7. Завантаження APK як артефакт
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: seabattle-debug-apk
         path: bin/*.apk
 
-    # Крок 4: Створення GitHub Release
+    # 8. Створення GitHub Release
     - name: Create Release
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v1
