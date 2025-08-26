@@ -58,7 +58,7 @@ jobs:
         buildozer android debug
 
     - name: Upload APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: seabattle-debug-apk
         path: bin/*.apk
@@ -67,8 +67,15 @@ jobs:
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v1
       with:
+      
         tag_name: v${{ github.run_number }}
         name: Морський Бій v${{ github.run_number }}
+        - name: Download artifact
+  uses: actions/download-artifact@v4
+  with:
+    name: my-artifact
+    path: build/
+
         body: |
           Автоматично згенерована збірка гри "Морський Бій"
           
