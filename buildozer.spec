@@ -98,7 +98,7 @@ android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 #android.ndk_path =
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-android.sdk_path = $ANDROIDSDK
+#android.sdk_path = $ANDROIDSDK
 
 # (str) ANT directory (if empty, it will be automatically downloaded.)
 #android.ant_path =
