@@ -67,15 +67,8 @@ jobs:
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v1
       with:
-      
         tag_name: v${{ github.run_number }}
         name: Морський Бій v${{ github.run_number }}
-        - name: Download artifact
-  uses: actions/download-artifact@v4
-  with:
-    name: my-artifact
-    path: build/
-
         body: |
           Автоматично згенерована збірка гри "Морський Бій"
           
